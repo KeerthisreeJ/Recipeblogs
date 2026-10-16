@@ -2,57 +2,30 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const protect = async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
+  try {
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET || 'kittyeats_super_secret_jwt_key_2026'
-      );
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
       req.user = await User.findById(decoded.id).select('-password');
-
-      if (!req.user) {
-        return res.status(401).json({ success: false, message: 'User no longer exists' });
-      }
-
       return next();
-    } catch (error) {
-      console.error('[Auth Error]:', error.message);
-      return res.status(401).json({ success: false, message: 'Not authorized, token failed' });
     }
-  }
-
-  if (!token) {
-    return res.status(401).json({ success: false, message: 'Not authorized, no token provided' });
+    return res.status(401).json({ success: false, message: 'Not authorized, no token' });
+  } catch (error) {
+    return res.status(401).json({ success: false, message: 'Invalid token' });
   }
 };
 
-// Optional auth: attaches req.user if a valid token is sent, but does not block public access
 const optionalAuth = async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET || 'kittyeats_super_secret_jwt_key_2026'
-      );
+  try {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
       req.user = await User.findById(decoded.id).select('-password');
-    } catch (error) {
-      // Ignore token failure for public routes
-      req.user = null;
     }
+  } catch (error) {
+    req.user = null;
   }
-
   next();
 };
 

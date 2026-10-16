@@ -4,12 +4,9 @@ import {
   Plus, 
   Trash2, 
   Upload, 
-  Image as ImageIcon, 
   Clock, 
   Users, 
-  ChefHat, 
   ArrowLeft,
-  Sparkles,
   Link as LinkIcon
 } from 'lucide-react';
 import { recipeService } from '../services/api';
@@ -40,7 +37,7 @@ const CreateEditRecipe = () => {
   const [category, setCategory] = useState('Dinner');
   const [cookingTime, setCookingTime] = useState(30);
   const [servings, setServings] = useState(2);
-  const [imageType, setImageType] = useState('url'); // 'url' or 'file'
+  const [imageType, setImageType] = useState('url');
   const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -49,7 +46,6 @@ const CreateEditRecipe = () => {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(isEditMode);
 
-  // If edit mode, fetch existing recipe data
   useEffect(() => {
     if (isEditMode) {
       const fetchExisting = async () => {
@@ -57,7 +53,6 @@ const CreateEditRecipe = () => {
           const res = await recipeService.getById(id);
           if (res.data?.success) {
             const r = res.data.recipe;
-            // Check authorization
             if (user && r.author?._id !== user._id && r.author !== user._id) {
               toast.error('You are not authorized to edit this recipe.');
               navigate('/');
@@ -84,23 +79,19 @@ const CreateEditRecipe = () => {
     }
   }, [id, isEditMode, navigate, toast, user]);
 
-  // Handle image file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
-  // Handle URL change
   const handleUrlChange = (val) => {
     setImageUrl(val);
     setImagePreview(val);
   };
 
-  // Dynamic ingredient handlers
   const handleIngredientChange = (index, value) => {
     const updated = [...ingredients];
     updated[index] = value;
@@ -116,7 +107,6 @@ const CreateEditRecipe = () => {
     setIngredients(ingredients.filter((_, i) => i !== index));
   };
 
-  // Dynamic step handlers
   const handleStepChange = (index, value) => {
     const updated = [...steps];
     updated[index] = value;
@@ -132,11 +122,9 @@ const CreateEditRecipe = () => {
     setSteps(steps.filter((_, i) => i !== index));
   };
 
-  // Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validations
     if (!title.trim()) {
       toast.error('Please enter a recipe title');
       return;
@@ -184,11 +172,10 @@ const CreateEditRecipe = () => {
       }
 
       if (res.data?.success) {
-        toast.success(isEditMode ? 'Recipe updated flawlessly!' : 'Recipe published to Kittyeats journal!');
+        toast.success(isEditMode ? 'Recipe updated!' : 'Recipe published!');
         navigate(`/recipe/${res.data.recipe._id}`);
       }
     } catch (err) {
-      console.error('Save recipe error:', err);
       toast.error(err.response?.data?.message || 'Failed to save recipe');
     } finally {
       setLoading(false);
@@ -206,8 +193,6 @@ const CreateEditRecipe = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      
-      {/* Top Bar */}
       <div className="mb-6 flex items-center justify-between">
         <Link
           to="/"
@@ -217,30 +202,28 @@ const CreateEditRecipe = () => {
           <span>Cancel & Exit</span>
         </Link>
         <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blush-100 text-brand-800">
-          {isEditMode ? 'Editing Recipe' : 'New Culinary Entry'}
+          {isEditMode ? 'Editing Recipe' : 'New Recipe'}
         </span>
       </div>
 
       <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-soft">
         <div className="border-b border-stone-100 pb-6 mb-8">
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-stone-900">
-            {isEditMode ? 'Revise Your Creation' : 'Publish a New Recipe'}
+            {isEditMode ? 'Edit Recipe' : 'Publish a Recipe'}
           </h1>
           <p className="mt-2 text-stone-600 text-sm">
-            Share your culinary stories, secret ingredients, and styling instructions with food lovers.
+            Share your cooking instructions, ingredients, and photos.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          
-          {/* Title */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
               Recipe Title <span className="text-brand-700">*</span>
             </label>
             <input
               type="text"
-              placeholder="e.g. Saffron Risotto with Caramelized Scallops"
+              placeholder="e.g. Saffron Risotto"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -248,7 +231,6 @@ const CreateEditRecipe = () => {
             />
           </div>
 
-          {/* Category, Cooking Time & Servings Row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
@@ -286,7 +268,7 @@ const CreateEditRecipe = () => {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
-                Servings (People)
+                Servings
               </label>
               <div className="relative">
                 <Users className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5" />
@@ -302,14 +284,13 @@ const CreateEditRecipe = () => {
             </div>
           </div>
 
-          {/* Description / Story */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
-              Story / Intro Description <span className="text-brand-700">*</span>
+              Description <span className="text-brand-700">*</span>
             </label>
             <textarea
               rows={4}
-              placeholder="Tell the story behind this dish... what makes the flavors unforgettable, what wine pairs well, or what memories it sparks."
+              placeholder="Describe this dish, its flavor, and why you love it..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
@@ -317,13 +298,11 @@ const CreateEditRecipe = () => {
             />
           </div>
 
-          {/* Recipe Photography / Image */}
           <div className="p-6 bg-cream-50 rounded-2xl border border-stone-200">
             <div className="flex items-center justify-between mb-4">
               <label className="block text-xs font-bold uppercase tracking-wider text-stone-800">
-                Recipe Photography
+                Recipe Image
               </label>
-              {/* Toggle upload vs URL */}
               <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-stone-200 text-xs">
                 <button
                   type="button"
@@ -361,7 +340,7 @@ const CreateEditRecipe = () => {
               <div className="border-2 border-dashed border-stone-300 rounded-xl p-6 text-center bg-white hover:border-brand-400 transition-colors">
                 <Upload className="w-8 h-8 text-brand-700 mx-auto mb-2" />
                 <label className="cursor-pointer text-xs font-bold text-brand-800 hover:underline">
-                  <span>Click to select an image from your device</span>
+                  <span>Click to select image file</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -369,7 +348,7 @@ const CreateEditRecipe = () => {
                     className="hidden"
                   />
                 </label>
-                <p className="text-[11px] text-stone-400 mt-1">PNG, JPG, WEBP up to 10MB</p>
+                <p className="text-[11px] text-stone-400 mt-1">PNG, JPG, WEBP</p>
                 {imageFile && (
                   <p className="text-xs text-stone-700 font-medium mt-2 bg-blush-50 py-1 px-3 rounded-lg inline-block">
                     Selected: {imageFile.name}
@@ -378,10 +357,9 @@ const CreateEditRecipe = () => {
               </div>
             )}
 
-            {/* Preview Box */}
             {imagePreview && (
               <div className="mt-4">
-                <p className="text-xs font-semibold text-stone-500 mb-2">Live Photo Preview:</p>
+                <p className="text-xs font-semibold text-stone-500 mb-2">Preview:</p>
                 <div className="aspect-[16/9] w-full max-w-sm rounded-xl overflow-hidden border border-stone-200 shadow-sm bg-stone-100">
                   <img
                     src={imagePreview}
@@ -396,14 +374,12 @@ const CreateEditRecipe = () => {
             )}
           </div>
 
-          {/* Dynamic Ingredients Section */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700">
-                  Ingredients List <span className="text-brand-700">*</span>
+                  Ingredients <span className="text-brand-700">*</span>
                 </h3>
-                <p className="text-xs text-stone-400">List precise quantities & preparations</p>
               </div>
               <button
                 type="button"
@@ -423,7 +399,7 @@ const CreateEditRecipe = () => {
                   </span>
                   <input
                     type="text"
-                    placeholder="e.g. 250g fresh Pugliese burrata cheese"
+                    placeholder="e.g. 250g pasta"
                     value={ing}
                     onChange={(e) => handleIngredientChange(idx, e.target.value)}
                     className="flex-1 bg-[#FAF7F2] text-stone-900 px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-800 focus:bg-white text-sm"
@@ -433,7 +409,6 @@ const CreateEditRecipe = () => {
                     onClick={() => removeIngredientField(idx)}
                     disabled={ingredients.length <= 1}
                     className="p-2 text-stone-400 hover:text-brand-800 disabled:opacity-20 transition-colors"
-                    title="Remove item"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -442,14 +417,12 @@ const CreateEditRecipe = () => {
             </div>
           </div>
 
-          {/* Dynamic Steps Section */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700">
-                  Step-by-Step Instructions <span className="text-brand-700">*</span>
+                  Instructions <span className="text-brand-700">*</span>
                 </h3>
-                <p className="text-xs text-stone-400">Clear culinary directions in sequential order</p>
               </div>
               <button
                 type="button"
@@ -469,7 +442,7 @@ const CreateEditRecipe = () => {
                   </div>
                   <textarea
                     rows={2}
-                    placeholder={`Step ${idx + 1}: Describe the action, temperature, and visual cues...`}
+                    placeholder={`Step ${idx + 1}: Instructions...`}
                     value={st}
                     onChange={(e) => handleStepChange(idx, e.target.value)}
                     className="flex-1 bg-[#FAF7F2] text-stone-900 p-3 rounded-xl border border-stone-200 focus:outline-none focus:border-brand-800 focus:bg-white text-sm leading-relaxed"
@@ -479,7 +452,6 @@ const CreateEditRecipe = () => {
                     onClick={() => removeStepField(idx)}
                     disabled={steps.length <= 1}
                     className="p-2 text-stone-400 hover:text-brand-800 disabled:opacity-20 transition-colors mt-2"
-                    title="Remove step"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -488,18 +460,17 @@ const CreateEditRecipe = () => {
             </div>
           </div>
 
-          {/* Submit Actions */}
           <div className="pt-6 border-t border-stone-100 flex items-center justify-end gap-4">
             <Link
               to="/"
               className="px-5 py-2.5 text-sm font-semibold text-stone-600 hover:text-stone-900 rounded-full"
             >
-              Discard Changes
+              Cancel
             </Link>
             <button
               type="submit"
               disabled={loading}
-              className="bg-brand-800 hover:bg-brand-900 text-white font-medium text-sm px-7 py-3 rounded-full shadow-md hover:shadow-hover transition-all disabled:opacity-60 flex items-center gap-2"
+              className="bg-brand-800 hover:bg-brand-900 text-white font-medium text-sm px-7 py-3 rounded-full shadow-md transition-all disabled:opacity-60 flex items-center gap-2"
             >
               {loading && <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></div>}
               <span>{isEditMode ? 'Update Recipe' : 'Publish Recipe'}</span>

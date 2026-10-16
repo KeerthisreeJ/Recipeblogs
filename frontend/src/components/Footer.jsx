@@ -1,14 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Sparkles, ChefHat } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 const Footer = () => {
   return (
     <footer className="bg-white border-t border-stone-200 mt-20 pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-stone-100">
-          
-          {/* Brand Col */}
           <div className="md:col-span-2">
             <Link to="/" className="inline-flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-2xl bg-brand-800 text-white flex items-center justify-center shadow-md">
@@ -28,7 +26,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Categories */}
           <div>
             <h4 className="font-serif text-stone-900 font-bold text-base mb-4 tracking-wide">
               Culinary Chapters
@@ -62,7 +59,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter Box */}
           <div>
             <h4 className="font-serif text-stone-900 font-bold text-base mb-4 tracking-wide">
               The Sunday Gazette
@@ -87,7 +83,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Credits */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
           <p>© {new Date().getFullYear()} Kittyeats. Crafted with passion & culinary aesthetics.</p>
           <p className="flex items-center gap-1.5 text-stone-500">

@@ -33,7 +33,6 @@ const Login = () => {
     }
   };
 
-  // Helper to fill demo account
   const fillDemoAccount = () => {
     setEmail('camille@kittyeats.com');
     setPassword('password123');
@@ -41,8 +40,6 @@ const Login = () => {
 
   return (
     <div className="min-h-[80vh] flex flex-col justify-center items-center px-4 py-12">
-      
-      {/* Decorative Brand Header */}
       <div className="text-center mb-8">
         <Link to="/" className="inline-flex items-center gap-2 mb-3">
           <div className="w-10 h-10 rounded-2xl bg-brand-800 text-white flex items-center justify-center shadow-md">
@@ -57,10 +54,7 @@ const Login = () => {
         </p>
       </div>
 
-      {/* Main Card */}
       <div className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 border border-stone-200/90 shadow-card">
-        
-        {/* Quick Demo Fill Button */}
         <div className="mb-6 p-3.5 rounded-2xl bg-blush-50 border border-brand-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-brand-800 shrink-0" />
@@ -85,7 +79,6 @@ const Login = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
               Email Address
@@ -103,7 +96,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
               Password
@@ -121,7 +113,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -138,7 +129,6 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Footer Link */}
         <div className="mt-8 pt-6 border-t border-stone-100 text-center">
           <p className="text-xs text-stone-500">
             New to our culinary table?{' '}

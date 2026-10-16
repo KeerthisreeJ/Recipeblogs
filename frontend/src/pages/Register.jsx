@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lock, Mail, User, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
+import { Lock, Mail, User, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
@@ -45,8 +45,6 @@ const Register = () => {
 
   return (
     <div className="min-h-[85vh] flex flex-col justify-center items-center px-4 py-12">
-      
-      {/* Decorative Brand Header */}
       <div className="text-center mb-8">
         <Link to="/" className="inline-flex items-center gap-2 mb-3">
           <div className="w-10 h-10 rounded-2xl bg-brand-800 text-white flex items-center justify-center shadow-md">
@@ -61,9 +59,7 @@ const Register = () => {
         </p>
       </div>
 
-      {/* Main Card */}
       <div className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 border border-stone-200/90 shadow-card">
-        
         {error && (
           <div className="mb-6 p-3.5 rounded-xl bg-red-50 border border-red-100 flex items-center gap-2.5 text-xs text-brand-900">
             <AlertCircle className="w-4 h-4 text-brand-700 shrink-0" />
@@ -72,8 +68,6 @@ const Register = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          
-          {/* Full Name */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1.5">
               Full Name / Chef Alias
@@ -91,7 +85,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Email */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1.5">
               Email Address
@@ -109,7 +102,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1.5">
               Password (Min. 6 Characters)
@@ -128,7 +120,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Bio Snippet */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1.5">
               Short Bio
@@ -142,7 +133,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -159,7 +149,6 @@ const Register = () => {
           </button>
         </form>
 
-        {/* Footer Link */}
         <div className="mt-8 pt-6 border-t border-stone-100 text-center">
           <p className="text-xs text-stone-500">
             Already part of our journal?{' '}

@@ -206,7 +206,6 @@ const seedDB = async () => {
         savedBy: [otherUsers[0]._id]
       });
 
-      // Add to otherUser's saved list
       await User.findByIdAndUpdate(otherUsers[0]._id, {
         $push: { savedRecipes: recipe._id }
       });

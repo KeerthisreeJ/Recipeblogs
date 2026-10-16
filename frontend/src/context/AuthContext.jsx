@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('kittyeats_token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Load user profile on mount or token change
   const loadUser = useCallback(async () => {
     const savedToken = localStorage.getItem('kittyeats_token');
     if (!savedToken) {
@@ -27,7 +26,6 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
       }
     } catch (err) {
-      console.error('Failed to load user session:', err);
       localStorage.removeItem('kittyeats_token');
       setToken(null);
       setUser(null);
@@ -40,7 +38,6 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, [loadUser]);
 
-  // Login
   const login = async (email, password) => {
     const response = await authService.login({ email, password });
     if (response.data?.success) {
@@ -53,7 +50,6 @@ export const AuthProvider = ({ children }) => {
     throw new Error(response.data?.message || 'Login failed');
   };
 
-  // Register
   const register = async (formData) => {
     const response = await authService.register(formData);
     if (response.data?.success) {
@@ -66,14 +62,12 @@ export const AuthProvider = ({ children }) => {
     throw new Error(response.data?.message || 'Registration failed');
   };
 
-  // Logout
   const logout = () => {
     localStorage.removeItem('kittyeats_token');
     setToken(null);
     setUser(null);
   };
 
-  // Update local user state
   const updateUser = (updatedData) => {
     setUser((prev) => (prev ? { ...prev, ...updatedData } : null));
   };

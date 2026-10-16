@@ -7,7 +7,6 @@ const api = axios.create({
   },
 });
 
-// Request interceptor to attach JWT token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('kittyeats_token');
@@ -16,38 +15,18 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor for handling common errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      // Don't auto-clear if we are checking optional auth
-      const isAuthCheck = error.config.url.includes('/api/auth/me');
-      if (isAuthCheck) {
-        localStorage.removeItem('kittyeats_token');
-      }
-    }
-    return Promise.reject(error);
-  }
-);
-
-// API methods helper
 export const recipeService = {
   getAll: (params) => api.get('/api/recipes', { params }),
   getById: (id) => api.get(`/api/recipes/${id}`),
-  create: (formData) =>
-    api.post('/api/recipes', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
-  update: (id, formData) =>
-    api.put(`/api/recipes/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+  create: (formData) => api.post('/api/recipes', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  update: (id, formData) => api.put(`/api/recipes/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
   delete: (id) => api.delete(`/api/recipes/${id}`),
   toggleLike: (id) => api.post(`/api/recipes/${id}/like`),
   toggleSave: (id) => api.post(`/api/recipes/${id}/save`),

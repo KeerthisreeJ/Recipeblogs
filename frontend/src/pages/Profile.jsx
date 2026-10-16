@@ -1,17 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { 
-  User as UserIcon, 
   Bookmark, 
-  Heart, 
   Grid, 
   Edit2, 
   PlusCircle, 
   Settings, 
   ChefHat, 
-  Check, 
-  X,
-  Sparkles
+  X 
 } from 'lucide-react';
 import { recipeService, userService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -28,8 +24,7 @@ const Profile = () => {
 
   const isOwnProfile = !paramUserId || (currentUser && currentUser._id === paramUserId);
   const targetUserId = paramUserId || currentUser?._id;
-
-  const currentTab = searchParams.get('tab') || 'recipes'; // 'recipes' or 'saved'
+  const currentTab = searchParams.get('tab') || 'recipes';
 
   const [profileUser, setProfileUser] = useState(null);
   const [authoredRecipes, setAuthoredRecipes] = useState([]);
@@ -37,14 +32,12 @@ const Profile = () => {
   const [stats, setStats] = useState({ recipesCount: 0, totalLikes: 0 });
   const [loading, setLoading] = useState(true);
 
-  // Edit Profile Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editName, setEditName] = useState('');
   const [editBio, setEditBio] = useState('');
   const [editAvatar, setEditAvatar] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Load profile data
   const loadProfile = useCallback(async () => {
     if (!targetUserId) return;
     setLoading(true);
@@ -60,7 +53,6 @@ const Profile = () => {
         setEditAvatar(res.data.user.avatar || '');
       }
 
-      // If viewing own profile, also load saved recipes
       if (isOwnProfile) {
         const savedRes = await recipeService.getSaved();
         if (savedRes.data?.success) {
@@ -68,7 +60,6 @@ const Profile = () => {
         }
       }
     } catch (err) {
-      console.error('Failed to load profile:', err);
       toast.error('Could not load profile');
     } finally {
       setLoading(false);
@@ -79,14 +70,12 @@ const Profile = () => {
     loadProfile();
   }, [loadProfile]);
 
-  // Tab switch
   const handleTabSwitch = (tab) => {
     const params = new URLSearchParams(searchParams);
     params.set('tab', tab);
     setSearchParams(params);
   };
 
-  // Update profile submit
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     if (!editName.trim()) {
@@ -105,7 +94,7 @@ const Profile = () => {
       if (res.data?.success) {
         setProfileUser(res.data.user);
         updateUser(res.data.user);
-        toast.success('Profile updated beautifully!');
+        toast.success('Profile updated!');
         setIsEditModalOpen(false);
       }
     } catch (err) {
@@ -117,12 +106,8 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      {/* Profile Header Box */}
       <section className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200/80 shadow-soft mb-10">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-          
-          {/* Avatar with decorative ring */}
           <div className="relative group shrink-0">
             <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden p-1 bg-gradient-to-tr from-brand-800 to-blush-300 shadow-md">
               <img
@@ -142,7 +127,6 @@ const Profile = () => {
             )}
           </div>
 
-          {/* User Details & Bio */}
           <div className="flex-1 text-center md:text-left">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
               <div>
@@ -150,11 +134,10 @@ const Profile = () => {
                   {profileUser?.name || 'Chef Profile'}
                 </h1>
                 <p className="text-xs text-stone-400 mt-0.5">
-                  Member of Kittyeats Culinary Circle
+                  Member of Kittyeats
                 </p>
               </div>
 
-              {/* Action buttons */}
               {isOwnProfile ? (
                 <div className="flex items-center justify-center md:justify-start gap-2.5">
                   <button
@@ -175,12 +158,10 @@ const Profile = () => {
               ) : null}
             </div>
 
-            {/* Bio */}
             <p className="text-sm text-stone-600 leading-relaxed max-w-2xl font-sans mb-6">
-              {profileUser?.bio || 'Passionate about authentic cooking, comforting seasonal bakes, and culinary visual aesthetics.'}
+              {profileUser?.bio || 'Food lover sharing home-cooked recipes.'}
             </p>
 
-            {/* Metrics Bar */}
             <div className="flex items-center justify-center md:justify-start gap-8 text-center pt-4 border-t border-stone-100">
               <div>
                 <span className="font-serif text-xl sm:text-2xl font-bold text-stone-900 block">
@@ -215,7 +196,6 @@ const Profile = () => {
         </div>
       </section>
 
-      {/* Tabs Navigation */}
       <div className="flex items-center justify-center border-b border-stone-200 mb-8">
         <button
           onClick={() => handleTabSwitch('recipes')}
@@ -244,7 +224,6 @@ const Profile = () => {
         )}
       </div>
 
-      {/* Grid Content */}
       <main>
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -256,12 +235,8 @@ const Profile = () => {
           authoredRecipes.length === 0 ? (
             <EmptyState
               icon={ChefHat}
-              title="No Recipes Shared Yet"
-              description={
-                isOwnProfile
-                  ? "Your recipe journal is currently blank. Craft your first signature creation today!"
-                  : "This chef hasn't shared any recipes yet."
-              }
+              title="No Recipes Yet"
+              description="No recipes shared yet."
               actionText={isOwnProfile ? "Create First Recipe" : undefined}
               actionLink={isOwnProfile ? "/create" : undefined}
             />
@@ -281,7 +256,7 @@ const Profile = () => {
             <EmptyState
               icon={Bookmark}
               title="No Saved Bookmarks"
-              description="Save recipes by clicking the bookmark icon on any recipe card to build your private collection."
+              description="Bookmarks will appear here."
               actionText="Explore Recipes"
               actionLink="/"
             />
@@ -299,13 +274,12 @@ const Profile = () => {
         )}
       </main>
 
-      {/* Edit Profile Modal */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-hover animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between pb-4 border-b border-stone-100 mb-5">
               <h3 className="font-serif text-xl font-bold text-stone-900">
-                Edit Chef Profile
+                Edit Profile
               </h3>
               <button
                 onClick={() => setIsEditModalOpen(false)}
@@ -344,7 +318,7 @@ const Profile = () => {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1.5">
-                  Bio / Culinary Story
+                  Bio
                 </label>
                 <textarea
                   rows={3}
